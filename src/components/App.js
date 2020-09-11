@@ -3,6 +3,7 @@ import popupCloseBtn from '../images/form_close-icon.svg';
 import { Header } from './Header';
 import { Main } from './Main';
 import { Footer } from './Footer';
+import { PopupWithForm } from './PopupWithForm';
 
 function App() {
   return (
@@ -11,73 +12,24 @@ function App() {
         <Header />
         <Main />
         <Footer />
-        <div className="popup js-popup-edit">
-          <div className="popup__container popup__container_size_m">
-            <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
-            <form className="form" name="editProfileForm" noValidate>
-              <h3 className="form__title">Редактировать профиль</h3>
-              <fieldset className="form__input-container">
-                <div className="form__control">
-                  <input className="form__input js-input-name" type="text" placeholder="Имя" name="name" required minLength="2" maxLength="40" />
-                  <span className="form__input-error js-input-name-error"></span>
-                </div>
-                <div className="form__control">
-                  <input className="form__input js-input-job" type="text" placeholder="О себе" name="job" required minLength="2" maxLength="200" />
-                  <span className="form__input-error js-input-job-error"></span>
-                </div>
-              </fieldset>
-              <button className="form__submit-btn">Сохранить</button>
-            </form>
-          </div>
-        </div>
-        <div className="popup js-popup-add">
-          <div className="popup__container popup__container_size_m">
-            <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
-            <form className="form" name="addCardForm" noValidate>
-              <h3 className="form__title">Новое место</h3>
-              <fieldset className="form__input-container">
-                <div className="form__control">
-                  <input className="form__input js-input-place" type="text" placeholder="Название" name="place" required minLength="2" maxLength="30" />
-                  <span className="form__input-error js-input-place-error"></span>
-                </div>
-                <div className="form__control">
-                  <input className="form__input js-input-img" type="URL" placeholder="Ссылка на картинку" name="image" required />
-                  <span className="form__input-error js-input-img-error"></span>
-                </div>
-              </fieldset>
-              <button className="form__submit-btn">Создать</button>
-            </form>
-          </div>
-        </div>
+        <PopupWithForm title="Редактировать профиль" name="edit">
+          <div>hyu</div>
+        </PopupWithForm>
+        <PopupWithForm title="Новое место" name="add">
+
+        </PopupWithForm>
+        <PopupWithForm title="Вы уверены?" name="confirm">
+
+        </PopupWithForm>
+
+        <PopupWithForm title="Обновить аватар" name="updateAvatar">
+
+        </PopupWithForm>
         <div className="popup js-popup-show-card">
           <div className="popup__container">
             <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
             <img className="card__img-full" src="#" alt="" />
             <p className="card__img-caption"></p>
-          </div>
-        </div>
-        <div className="popup js-popup-confirm">
-          <div className="popup__container popup__container_size_m">
-            <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
-            <form className="form" name="confirmForm" noValidate>
-              <h3 className="form__title">Вы уверены?</h3>
-              <button className="form__submit-btn">Да</button>
-            </form>
-          </div>
-        </div>
-        <div className="popup js-popup-update-avatar">
-          <div className="popup__container popup__container_size_m">
-            <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
-            <form className="form" name="updateAvatar" noValidate>
-              <h3 className="form__title">Обновить аватар</h3>
-              <fieldset className="form__input-container">
-                <div className="form__control">
-                  <input className="form__input js-input-avatar" type="URL" placeholder="Ссылка на картинку" name="avatar" required />
-                  <span className="form__input-error js-input-img-error"></span>
-                </div>
-              </fieldset>
-              <button className="form__submit-btn">Сохранить</button>
-            </form>
           </div>
         </div>
       </div>
