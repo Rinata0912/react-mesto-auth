@@ -67,4 +67,8 @@
 @import url(./blocks/form/__submit-btn/_inactive/form__submit-btn_inactive.css);
 @import url(./blocks/form/__title/form__title.css);
 
+body {
+    background-color: #000;
+}
+
   

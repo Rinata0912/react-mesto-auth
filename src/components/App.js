@@ -61,7 +61,7 @@ function App() {
           <button className="form__submit-btn">Сохранить</button>
         </PopupWithForm>
 
-        {selectedCard && <ImagePopup card={selectedCard}/>}
+        <ImagePopup card={selectedCard} isOpen={!!selectedCard} onClose={closeAllPopups}/>
       </div>
     </>
   );
@@ -83,6 +83,7 @@ function App() {
       setIsEditAvatarPopupOpen(false);
       setIsEditProfilePopupOpen(false);
       setIsAddPlacePopupOpen(false);
+      setSelectedCard('');
     }
   }
 

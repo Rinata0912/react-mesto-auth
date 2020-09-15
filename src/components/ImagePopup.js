@@ -1,14 +1,29 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import popupCloseBtn from '../images/form_close-icon.svg';
 
-export function ImagePopup({card}) {
-    return (
-        <div className={`popup js-popup-show-card ${card && `popup_opened`}`}>
-            <div className="popup__container">
-            <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" /></button>
-            <img className="card__img-full" src={card.link} alt="" />
-            <p className="card__img-caption">{card.name}</p>
-            </div>
-        </div>
-    );
+export function ImagePopup({card = {}, onClose, isOpen}) {
+  const handleOnClose = useCallback((evt) => {
+    onClose(evt);
+  },[onClose]);
+
+  useEffect(() => {
+    if(isOpen) {
+      document.addEventListener('keydown', handleOnClose);
+    }
+
+    return () => { 
+      document.removeEventListener('keydown', handleOnClose); 
+    }
+
+  }, [isOpen, handleOnClose]);
+
+  return (
+    <div className={`popup js-popup-show-card ${isOpen && `popup_opened`}`} onClick={handleOnClose}>
+      <div className="popup__container">
+      <button className="popup__close-btn" type="button"><img src={popupCloseBtn} alt="закрыть форму" className="popup__close-icon" onClick={handleOnClose}/></button>
+      <img className="card__img-full" src={card.link} alt="" />
+      <p className="card__img-caption">{card.name}</p>
+      </div>
+    </div>
+  );
 }

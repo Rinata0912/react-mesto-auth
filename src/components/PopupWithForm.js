@@ -5,8 +5,7 @@ export function PopupWithForm({title, name, isOpen, onClose, children}) {
   
   const handleOnClose = useCallback((evt) => {
     onClose(evt);
-    console.log(evt);
-  }, [onClose]);
+  },[onClose]);
 
   useEffect(() => {
     if(isOpen) {
