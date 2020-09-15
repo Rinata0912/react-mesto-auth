@@ -78,13 +78,11 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function closeAllPopups(evt) {
-    if(evt.target === evt.currentTarget || evt.key === 'Escape') {
-      setIsEditAvatarPopupOpen(false);
-      setIsEditProfilePopupOpen(false);
-      setIsAddPlacePopupOpen(false);
-      setSelectedCard('');
-    }
+  function closeAllPopups() {
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setSelectedCard('');
   }
 
   function handleCardClick(card) {

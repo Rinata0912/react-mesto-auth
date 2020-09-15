@@ -4,7 +4,9 @@ import popupCloseBtn from '../images/form_close-icon.svg';
 export function PopupWithForm({title, name, isOpen, onClose, children}) {
   
   const handleOnClose = useCallback((evt) => {
-    onClose(evt);
+    if(evt.target === evt.currentTarget || evt.key === 'Escape') {
+      onClose();
+    }
   },[onClose]);
 
   useEffect(() => {
