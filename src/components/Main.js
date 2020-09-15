@@ -1,14 +1,31 @@
 import React from 'react';
 import editBtn from '../images/button-edit_icon.svg';
 import addBtn from '../images/button-add_icon.svg';
+import {api} from '../utils/Api';
 
 export function Main(props) {
+  const [userName, setUserName] = React.useState();
+  const [userDescription, setUserDescription] = React.useState();
+  const [userAvatar, setUserAvatar] = React.useState();
+
+  React.useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then((values) => {
+        console.log(values);
+        const [userInfo, initCards] = values;
+        setUserName(userInfo.name);
+        setUserDescription(userInfo.about);
+        setUserAvatar(userInfo.avatar);
+        console.log(userInfo);
+      })
+  }, []);
+
   return (
     <main className="content">
       <section className="profile">
         <div className="profile__container">
           <div className="profile__avatar">
-            <img src="#" alt="фотография пользователя" className="profile__avatar-img" />
+            <img src={userAvatar} alt="фотография пользователя" className="profile__avatar-img" />
             <button className="profile__avatar-edit" onClick={props.onEditAvatar}>
               <svg className="profile__avatar-edit-icon" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs/>
@@ -18,10 +35,10 @@ export function Main(props) {
           </div>
           <div className="profile__info">
             <div className="profile__info-container">
-              <h1 className="profile__name"></h1>
+              <h1 className="profile__name">{userName}</h1>
               <button className="profile__btn profile__btn_type_edit" type="button" onClick={props.onEditProfile}><img src={editBtn} alt="редактировать профиль" className="profile__btn-icon profile__btn-icon_type_edit" /></button>
             </div>
-            <p className="profile__job"></p>
+            <p className="profile__job">{userDescription}</p>
           </div>
         </div>
         <button className="profile__btn profile__btn_type_add" type="button" onClick={props.onAddPlace}><img src={addBtn} alt="добавить карточку" /></button>
