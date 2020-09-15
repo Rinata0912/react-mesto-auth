@@ -94,6 +94,6 @@ const api = new Api({
     authorization: '0104c4f6-b4d1-4baf-96ce-c414c2f8cbbe',
     'Content-Type': 'application/json',
   },
-});
+} );
 
 export {api};
