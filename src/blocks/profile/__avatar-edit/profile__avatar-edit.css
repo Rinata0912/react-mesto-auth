@@ -13,5 +13,6 @@
   display: flex;
   border-radius: 50%;
   transition: opacity .3s ease;
+  outline: none;
 }
 

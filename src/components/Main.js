@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import editBtn from '../images/button-edit_icon.svg';
 import addBtn from '../images/button-add_icon.svg';
-import {api} from '../utils/Api';
+import {api} from '../utils/api';
 import {Card} from './Card';
 
 export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {

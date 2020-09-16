@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import popupCloseBtn from '../images/form_close-icon.svg';
 import { Header } from './Header';
 import { Main } from './Main';
 import { Footer } from './Footer';
@@ -16,32 +15,69 @@ function App() {
     <>
       <div className="page">
         <Header />
-        <Main onCardClick={handleCardClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick}/>
+        <Main 
+          onCardClick={handleCardClick} 
+          onEditProfile={handleEditProfileClick} 
+          onAddPlace={handleAddPlaceClick} 
+          onEditAvatar={handleEditAvatarClick}/>
         <Footer />
 
-        <PopupWithForm title="Редактировать профиль" name="edit" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
+        <PopupWithForm 
+          title="Редактировать профиль" 
+          name="edit" 
+          isOpen={isEditProfilePopupOpen} 
+          onClose={closeAllPopups}>
           <fieldset className="form__input-container">
             <div className="form__control">
-              <input className="form__input js-input-name" type="text" placeholder="Имя" name="name" required minLength="2" maxLength="40" />
-              <span className="form__input-error js-input-name-error"></span>
+              <input 
+                className="form__input js-input-name" 
+                type="text" 
+                placeholder="Имя" 
+                name="name" 
+                required 
+                minLength="2" 
+                maxLength="40" />
+              <span className="form__input-error js-input-name-error" />
             </div>
             <div className="form__control">
-              <input className="form__input js-input-job" type="text" placeholder="О себе" name="job" required minLength="2" maxLength="200" />
-              <span className="form__input-error js-input-job-error"></span>
+              <input 
+                className="form__input js-input-job" 
+                type="text" 
+                placeholder="О себе" 
+                name="job" 
+                required 
+                minLength="2" 
+                maxLength="200" />
+              <span className="form__input-error js-input-job-error" />
             </div>
           </fieldset>
           <button className="form__submit-btn">Сохранить</button>
         </PopupWithForm>
 
-        <PopupWithForm title="Новое место" name="add" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
+        <PopupWithForm 
+          title="Новое место" 
+          name="add" 
+          isOpen={isAddPlacePopupOpen} 
+          onClose={closeAllPopups}>
           <fieldset className="form__input-container">
             <div className="form__control">
-              <input className="form__input js-input-place" type="text" placeholder="Название" name="place" required minLength="2" maxLength="30" />
-              <span className="form__input-error js-input-place-error"></span>
+              <input 
+                className="form__input js-input-place" 
+                type="text" placeholder="Название" 
+                name="place" 
+                required 
+                minLength="2" 
+                maxLength="30" />
+              <span className="form__input-error js-input-place-error" />
             </div>
             <div className="form__control">
-              <input className="form__input js-input-img" type="URL" placeholder="Ссылка на картинку" name="image" required />
-              <span className="form__input-error js-input-img-error"></span>
+              <input 
+                className="form__input js-input-img" 
+                type="URL" 
+                placeholder="Ссылка на картинку" 
+                name="image" 
+                required />
+              <span className="form__input-error js-input-img-error" />
             </div>
           </fieldset>
           <button className="form__submit-btn">Создать</button>
@@ -51,11 +87,20 @@ function App() {
           <button className="form__submit-btn">Да</button>
         </PopupWithForm>
 
-        <PopupWithForm title="Обновить аватар" name="updateAvatar" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
+        <PopupWithForm 
+          title="Обновить аватар" 
+          name="updateAvatar" 
+          isOpen={isEditAvatarPopupOpen} 
+          onClose={closeAllPopups}>
           <fieldset className="form__input-container">
             <div className="form__control">
-              <input className="form__input js-input-avatar" type="URL" placeholder="Ссылка на картинку" name="avatar" required />
-              <span className="form__input-error js-input-img-error"></span>
+              <input 
+                className="form__input js-input-avatar" 
+                type="URL" 
+                placeholder="Ссылка на картинку" 
+                name="avatar" 
+                required />
+              <span className="form__input-error js-input-img-error" />
             </div>
           </fieldset>
           <button className="form__submit-btn">Сохранить</button>

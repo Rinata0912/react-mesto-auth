@@ -1,5 +1,10 @@
 {
   "name": "mesto-react",
+  "description": "MESTO.10 by Yandex.Praktikum",
+  "author": {
+    "name": "Rinata Baygulova",
+    "email": "rinulya091297@yandex.ru"
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
