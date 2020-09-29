@@ -5,13 +5,22 @@ import { Footer } from './Footer';
 import { PopupWithForm } from './PopupWithForm';
 import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { api } from '../utils/api';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState({});
+
+  useEffect(() => {
+    Promise.all([api.getUserInfo()])
+      .then(value => {
+        setCurrentUser(value);
+      })
+  }, []);
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
