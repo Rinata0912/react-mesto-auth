@@ -1,22 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import editBtn from '../images/button-edit_icon.svg';
 import addBtn from '../images/button-add_icon.svg';
 import {api} from '../utils/api';
 import {Card} from './Card';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {
-  const [userName, setUserName] = useState();
-  const [userDescription, setUserDescription] = useState();
-  const [userAvatar, setUserAvatar] = useState();
   const [cards, setCards] = useState([]);
+  const currentUser = useContext(CurrentUserContext);
+  const { name, about, avatar } = currentUser;
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
+    Promise.all([api.getInitialCards()])
       .then((values) => {
-        const [userInfo, initCards] = values;
-        setUserName(userInfo.name);
-        setUserDescription(userInfo.about);
-        setUserAvatar(userInfo.avatar);
+        const [initCards] = values;
         setCards(initCards);
       })
   }, []);
@@ -26,7 +23,7 @@ export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {
       <section className="profile">
         <div className="profile__container">
           <div className="profile__avatar">
-            <img src={userAvatar} alt="фотография пользователя" className="profile__avatar-img" />
+            <img src={avatar} alt="фотография пользователя" className="profile__avatar-img" />
             <button className="profile__avatar-edit" onClick={onEditAvatar}>
               <svg className="profile__avatar-edit-icon" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs/>
@@ -36,10 +33,10 @@ export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {
           </div>
           <div className="profile__info">
             <div className="profile__info-container">
-              <h1 className="profile__name">{userName}</h1>
+              <h1 className="profile__name">{name}</h1>
               <button className="profile__btn profile__btn_type_edit" type="button" onClick={onEditProfile}><img src={editBtn} alt="редактировать профиль" className="profile__btn-icon profile__btn-icon_type_edit" /></button>
             </div>
-            <p className="profile__job">{userDescription}</p>
+            <p className="profile__job">{about}</p>
           </div>
         </div>
         <button className="profile__btn profile__btn_type_add" type="button" onClick={onAddPlace}><img src={addBtn} alt="добавить карточку" /></button>
