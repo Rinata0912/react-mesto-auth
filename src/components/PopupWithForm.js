@@ -2,7 +2,7 @@ import React from 'react';
 import popupCloseBtn from '../images/form_close-icon.svg';
 import { useClosePopup } from '../utils/useClosePopup';
 
-export function PopupWithForm({title, name, isOpen, onClose, children}) {
+export function PopupWithForm({title, name, isOpen, onClose, onSubmit, children}) {
   
   const handleOnClose = useClosePopup({onClose, isOpen});
 
@@ -18,7 +18,7 @@ export function PopupWithForm({title, name, isOpen, onClose, children}) {
               className="popup__close-icon" 
               onClick={handleOnClose}/>
           </button>
-          <form className="form" name={`${name}ProfileForm`} noValidate>
+          <form className="form" name={`${name}ProfileForm`} onSubmit={onSubmit} noValidate >
             <h3 className="form__title">{title}</h3>
             {children}
           </form>

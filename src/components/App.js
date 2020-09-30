@@ -6,6 +6,7 @@ import { PopupWithForm } from './PopupWithForm';
 import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from '../utils/api';
+import { EditProfilePopup } from './EditProfilePopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -34,37 +35,7 @@ function App() {
         />
         <Footer />
 
-        <PopupWithForm 
-          title="Редактировать профиль" 
-          name="edit" 
-          isOpen={isEditProfilePopupOpen} 
-          onClose={closeAllPopups}>
-          <fieldset className="form__input-container">
-            <div className="form__control">
-              <input 
-                className="form__input js-input-name" 
-                type="text" 
-                placeholder="Имя" 
-                name="name" 
-                required 
-                minLength="2" 
-                maxLength="40" />
-              <span className="form__input-error js-input-name-error" />
-            </div>
-            <div className="form__control">
-              <input 
-                className="form__input js-input-job" 
-                type="text" 
-                placeholder="О себе" 
-                name="job" 
-                required 
-                minLength="2" 
-                maxLength="200" />
-              <span className="form__input-error js-input-job-error" />
-            </div>
-          </fieldset>
-          <button className="form__submit-btn">Сохранить</button>
-        </PopupWithForm>
+        <EditProfilePopup onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} onUpdateUser={handleUpdateUser}/>
 
         <PopupWithForm 
           title="Новое место" 
@@ -144,6 +115,13 @@ function App() {
 
   function handleCardClick(card) {
     setSelectedCard(card);
+  }
+
+  function handleUpdateUser({name, about}) {
+    api.editProfileInfo(name, about).then((newUserInfo) => {
+      setCurrentUser(newUserInfo);
+      closeAllPopups();
+    })
   }
 }
 
