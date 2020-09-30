@@ -75,6 +75,15 @@ class Api {
       .then(res => res)
   }
 
+  toggleLikeCard (id, isLiked) {
+    return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
+      method: (isLiked ? 'DELETE' : 'PUT'),
+      headers: this._options.headers
+    })
+      .then(this._handleOriginalRes)
+      .then(res => res)
+  }
+
   updateAvatar (avatar) {
     return fetch(`${this._options.baseUrl}/users/me/avatar`, {
       method: 'PATCH',

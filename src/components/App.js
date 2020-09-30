@@ -15,7 +15,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    Promise.all([api.getUserInfo()])
+    api.getUserInfo()
       .then(value => {
         setCurrentUser(value);
       })

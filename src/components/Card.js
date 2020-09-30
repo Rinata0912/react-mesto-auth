@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-export function Card({card, onCardClick}) {
+export function Card({card, onCardClick, onCardLike, onCardDelete}) {
 
   const currentUser = useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
@@ -12,9 +12,20 @@ export function Card({card, onCardClick}) {
     onCardClick(card);
   }
 
+  function handleLikeClick(evt) {
+    evt.preventDefault();
+    onCardLike(card);
+  }
+
+  function handleDeleteClick(evt) {
+    evt.preventDefault();
+    onCardDelete(card);
+  }
+
   return(
     <article className="card">
       <button 
+        onClick={handleDeleteClick}
         className={`card__delete-btn ${isOwn && 'card__delete-btn_state_visible'}`} 
         type="button">
         <svg 
@@ -34,9 +45,9 @@ export function Card({card, onCardClick}) {
       <div className="card__content">
         <p className="card__title">{card.name}</p>
         <div className="card__like">
-          <button className={`card__btn ${isLiked && 'card__btn-active'}`}>
+          <button onClick={handleLikeClick} className={`card__btn ${isLiked && 'card__btn-active'}`}>
             <svg 
-              className="card__btn-icon" 
+              className="card__btn-icon"
               width="21" 
               height="19" 
               viewBox="0 0 21 19" 
