@@ -16,7 +16,6 @@ export function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}) {
     onUpdateAvatar({
       avatar: avatarInputRef.current.value,
     });
-
   }
 
   return(

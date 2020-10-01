@@ -2,36 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { Header } from './Header';
 import { Main } from './Main';
 import { Footer } from './Footer';
-import { PopupWithForm } from './PopupWithForm';
 import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from '../utils/api';
 import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
+import { ConfirmDeletePopup } from './ConfirmDeletePopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
+  const [deletedCard, setDeletedCard] = useState({});
   const [selectedCard, setSelectedCard] = useState();
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    api.getInitialCards()
-      .then((initCards) => {
+    Promise.all([api.getInitialCards(), api.getUserInfo()])
+      .then(values => {
+        const [initCards, userInfo] = values;
         setCards(initCards);
+        setCurrentUser(userInfo);
       })
   }, []);
-
-  useEffect(() => {
-    api.getUserInfo()
-      .then(value => {
-        setCurrentUser(value);
-      })
-  }, []);
-
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -44,7 +40,7 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleConfirmDeleteClick}
         />
         <Footer />
 
@@ -52,9 +48,7 @@ function App() {
 
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
 
-        <PopupWithForm title="Вы уверены?" name="confirm" onClose={closeAllPopups}>
-          <button className="form__submit-btn">Да</button>
-        </PopupWithForm>
+        <ConfirmDeletePopup onCardDelete={handleCardDelete} isOpen={isConfirmDeletePopupOpen} onClose={closeAllPopups} />
 
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
@@ -75,10 +69,16 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
+  function handleConfirmDeleteClick(card) {
+    setIsConfirmDeletePopupOpen(true);
+    setDeletedCard(card);
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsConfirmDeletePopupOpen(false);
     setSelectedCard('');
   }
 
@@ -109,10 +109,11 @@ function App() {
     })
   }
 
-  function handleCardDelete(card) {
-    api.deleteCard(card._id).then((deletedCard) => {
-      const newCards = cards.filter(i => i._id !== card._id);
+  function handleCardDelete() {
+    api.deleteCard(deletedCard._id).then(() => {
+      const newCards = cards.filter(i => i._id !== deletedCard._id);
       setCards(newCards);
+      closeAllPopups();
     })
   }
 
