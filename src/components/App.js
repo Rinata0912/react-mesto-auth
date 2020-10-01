@@ -7,6 +7,7 @@ import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from '../utils/api';
 import { EditProfilePopup } from './EditProfilePopup';
+import { EditAvatarPopup } from './EditAvatarPopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -70,24 +71,7 @@ function App() {
           <button className="form__submit-btn">Да</button>
         </PopupWithForm>
 
-        <PopupWithForm 
-          title="Обновить аватар" 
-          name="updateAvatar" 
-          isOpen={isEditAvatarPopupOpen} 
-          onClose={closeAllPopups}>
-          <fieldset className="form__input-container">
-            <div className="form__control">
-              <input 
-                className="form__input js-input-avatar" 
-                type="URL" 
-                placeholder="Ссылка на картинку" 
-                name="avatar" 
-                required />
-              <span className="form__input-error js-input-img-error" />
-            </div>
-          </fieldset>
-          <button className="form__submit-btn">Сохранить</button>
-        </PopupWithForm>
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
         <ImagePopup card={selectedCard} isOpen={!!selectedCard} onClose={closeAllPopups}/>
       </div>
@@ -120,6 +104,13 @@ function App() {
   function handleUpdateUser({name, about}) {
     api.editProfileInfo(name, about).then((newUserInfo) => {
       setCurrentUser(newUserInfo);
+      closeAllPopups();
+    })
+  }
+
+  function handleUpdateAvatar({avatar}) {
+    api.updateAvatar(avatar).then((newAvatar) => {
+      setCurrentUser(newAvatar);
       closeAllPopups();
     })
   }
