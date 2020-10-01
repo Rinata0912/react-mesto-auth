@@ -5,33 +5,10 @@ import {api} from '../utils/api';
 import {Card} from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {
-  const [cards, setCards] = useState([]);
+export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick, cards, onCardLike, onCardDelete}) {
+  
   const currentUser = useContext(CurrentUserContext);
   const { name, about, avatar } = currentUser;
-
-  useEffect(() => {
-    api.getInitialCards()
-      .then((initCards) => {
-        setCards(initCards);
-      })
-  }, []);
-
-  function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-
-    api.toggleLikeCard(card._id, isLiked).then((newCard) => {
-      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-      setCards(newCards);
-    })
-  }
-
-  function handleCardDelete(card) {
-    api.deleteCard(card._id).then((deletedCard) => {
-      const newCards = cards.filter(i => i._id !== card._id);
-      setCards(newCards);
-    })
-  }
 
   return (
     <main className="content">
@@ -58,7 +35,7 @@ export function Main({onAddPlace, onEditAvatar, onEditProfile, onCardClick}) {
       </section>
       <section className="cards-gallery">
         {cards.map((card) => {
-          return <Card key={card._id} card={card} onCardDelete={handleCardDelete} onCardClick={onCardClick} onCardLike={handleCardLike}/>
+          return <Card key={card._id} card={card} onCardDelete={onCardDelete} onCardClick={onCardClick} onCardLike={onCardLike}/>
         })}
       </section>
     </main>

@@ -8,6 +8,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from '../utils/api';
 import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
+import { AddPlacePopup } from './AddPlacePopup';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -15,6 +16,14 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
   const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    api.getInitialCards()
+      .then((initCards) => {
+        setCards(initCards);
+      })
+  }, []);
 
   useEffect(() => {
     api.getUserInfo()
@@ -33,39 +42,15 @@ function App() {
           onEditProfile={handleEditProfileClick} 
           onAddPlace={handleAddPlaceClick} 
           onEditAvatar={handleEditAvatarClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
         <Footer />
 
         <EditProfilePopup onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} onUpdateUser={handleUpdateUser}/>
 
-        <PopupWithForm 
-          title="Новое место" 
-          name="add" 
-          isOpen={isAddPlacePopupOpen} 
-          onClose={closeAllPopups}>
-          <fieldset className="form__input-container">
-            <div className="form__control">
-              <input 
-                className="form__input js-input-place" 
-                type="text" placeholder="Название" 
-                name="place" 
-                required 
-                minLength="2" 
-                maxLength="30" />
-              <span className="form__input-error js-input-place-error" />
-            </div>
-            <div className="form__control">
-              <input 
-                className="form__input js-input-img" 
-                type="URL" 
-                placeholder="Ссылка на картинку" 
-                name="image" 
-                required />
-              <span className="form__input-error js-input-img-error" />
-            </div>
-          </fieldset>
-          <button className="form__submit-btn">Создать</button>
-        </PopupWithForm>
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
 
         <PopupWithForm title="Вы уверены?" name="confirm" onClose={closeAllPopups}>
           <button className="form__submit-btn">Да</button>
@@ -111,6 +96,29 @@ function App() {
   function handleUpdateAvatar({avatar}) {
     api.updateAvatar(avatar).then((newAvatar) => {
       setCurrentUser(newAvatar);
+      closeAllPopups();
+    })
+  }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    api.toggleLikeCard(card._id, isLiked).then((newCard) => {
+      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      setCards(newCards);
+    })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id).then((deletedCard) => {
+      const newCards = cards.filter(i => i._id !== card._id);
+      setCards(newCards);
+    })
+  }
+
+  function handleAddPlaceSubmit({name, link}) {
+    api.addCard(name, link).then((newCard) => {
+      setCards([newCard, ...cards]);
       closeAllPopups();
     })
   }
