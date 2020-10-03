@@ -15,6 +15,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [deletedCard, setDeletedCard] = useState({});
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
@@ -53,7 +54,7 @@ function App() {
 
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
-        <ImagePopup card={selectedCard} isOpen={!!selectedCard} onClose={closeAllPopups}/>
+        <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups}/>
       </div>
     </ CurrentUserContext.Provider>
   );
@@ -80,11 +81,12 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
-    setSelectedCard({});
+    setIsImagePopupOpen(false);
   }
 
   function handleCardClick(card) {
     setSelectedCard(card);
+    setIsImagePopupOpen(true);
   }
 
   function handleUpdateUser({name, about}) {

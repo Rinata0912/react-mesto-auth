@@ -9,12 +9,11 @@ export function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}) {
     onUpdateAvatar({
       avatar: avatarInputRef.current.value,
     });
-    // avatarInputRef.current.value = '';
   }
 
-  // useEffect(() => {
-  //   avatarInputRef.current.value = '';
-  // }, [isOpen]);
+  useEffect(() => {
+    avatarInputRef.current.value = '';
+  }, [isOpen]);
 
   return(
     <PopupWithForm 

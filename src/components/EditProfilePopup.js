@@ -26,7 +26,6 @@ export function EditProfilePopup({onClose, isOpen, onUpdateUser}) {
       name,
       about: description,
     });
-    console.log(onUpdateUser);
   }
 
   return (
