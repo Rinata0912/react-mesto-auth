@@ -16,7 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
   const [deletedCard, setDeletedCard] = useState({});
-  const [selectedCard, setSelectedCard] = useState();
+  const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
@@ -27,6 +27,7 @@ function App() {
         setCards(initCards);
         setCurrentUser(userInfo);
       })
+      .catch(res => console.log(res));
   }, []);
 
   return (
@@ -79,7 +80,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
-    setSelectedCard('');
+    setSelectedCard({});
   }
 
   function handleCardClick(card) {
@@ -87,41 +88,51 @@ function App() {
   }
 
   function handleUpdateUser({name, about}) {
-    api.editProfileInfo(name, about).then((newUserInfo) => {
-      setCurrentUser(newUserInfo);
-      closeAllPopups();
-    })
+    api.editProfileInfo(name, about)
+      .then((newUserInfo) => {
+        setCurrentUser(newUserInfo);
+        closeAllPopups();
+      })
+      .catch(res => console.log(res));
   }
 
   function handleUpdateAvatar({avatar}) {
-    api.updateAvatar(avatar).then((newAvatar) => {
-      setCurrentUser(newAvatar);
-      closeAllPopups();
-    })
+    api.updateAvatar(avatar)
+      .then((newAvatar) => {
+        setCurrentUser(newAvatar);
+        closeAllPopups();
+      })
+      .catch(res => console.log(res));
   }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
-    api.toggleLikeCard(card._id, isLiked).then((newCard) => {
-      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-      setCards(newCards);
-    })
+    api.toggleLikeCard(card._id, isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+        setCards(newCards);
+      })
+      .catch(res => console.log(res));
   }
 
   function handleCardDelete() {
-    api.deleteCard(deletedCard._id).then(() => {
-      const newCards = cards.filter(i => i._id !== deletedCard._id);
-      setCards(newCards);
-      closeAllPopups();
-    })
+    api.deleteCard(deletedCard._id)
+      .then(() => {
+        const newCards = cards.filter(i => i._id !== deletedCard._id);
+        setCards(newCards);
+        closeAllPopups();
+      })
+      .catch(res => console.log(res));
   }
 
   function handleAddPlaceSubmit({name, link}) {
-    api.addCard(name, link).then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups();
-    })
+    api.addCard(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch(res => console.log(res));
   }
 }
 

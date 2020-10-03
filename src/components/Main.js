@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import editBtn from '../images/button-edit_icon.svg';
 import addBtn from '../images/button-add_icon.svg';
-import {api} from '../utils/api';
 import {Card} from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
