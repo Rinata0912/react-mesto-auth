@@ -4,96 +4,116 @@ class Api {
   }
 
   _handleOriginalRes = (res) => {
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     }
     return Promise.reject(res);
-  }
+  };
 
-  getInitialCards () {
-    return fetch(`${this._options.baseUrl}/cards`, {headers: this._options.headers})
+  getInitialCards() {
+    return fetch(`${this._options.baseUrl}/cards`, {
+      headers: this._options.headers,
+    })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  getUserInfo () {
-    return fetch(`${this._options.baseUrl}/users/me`, {headers: this._options.headers})
+  getUserInfo() {
+    return fetch(`${this._options.baseUrl}/users/me`, {
+      headers: this._options.headers,
+    })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  editProfileInfo (name, about) {
+  editProfileInfo(name, about) {
     return fetch(`${this._options.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._options.headers,
       body: JSON.stringify({
         name,
-        about
-      })
+        about,
+      }),
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  addCard (name, link) {
+  addCard(name, link) {
     return fetch(`${this._options.baseUrl}/cards`, {
       method: 'POST',
       headers: this._options.headers,
       body: JSON.stringify({
         name,
-        link
-      })
+        link,
+      }),
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  deleteCard (id) {
+  deleteCard(id) {
     return fetch(`${this._options.baseUrl}/cards/${id}`, {
       method: 'DELETE',
-      headers: this._options.headers
+      headers: this._options.headers,
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  likeCard (id) {
+  likeCard(id) {
     return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
       method: 'PUT',
-      headers: this._options.headers
+      headers: this._options.headers,
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  unlikeCard (id) {
+  unlikeCard(id) {
     return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
       method: 'DELETE',
-      headers: this._options.headers
+      headers: this._options.headers,
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  toggleLikeCard (id, isLiked) {
+  toggleLikeCard(id, isLiked) {
     return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
-      method: (isLiked ? 'DELETE' : 'PUT'),
-      headers: this._options.headers
+      method: isLiked ? 'DELETE' : 'PUT',
+      headers: this._options.headers,
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
   }
 
-  updateAvatar (avatar) {
+  updateAvatar(avatar) {
     return fetch(`${this._options.baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._options.headers,
       body: JSON.stringify({
-        avatar
-      })
+        avatar,
+      }),
     })
       .then(this._handleOriginalRes)
-      .then(res => res)
+      .then((res) => res);
+  }
+
+  signUp() {
+    return fetch(`${this._options.baseUrl}/sign-up`, {
+      headers: this._options.headers,
+    })
+      .then(this._handleOriginalRes)
+      .then((res) => res);
+  }
+
+  signIn() {
+    return fetch(`${this._options.baseUrl}/sign-in`, {
+      headers: this._options.headers,
+    })
+      .then(this._handleOriginalRes)
+      .then((res) => res);
   }
 }
 
@@ -103,6 +123,6 @@ const api = new Api({
     authorization: '0104c4f6-b4d1-4baf-96ce-c414c2f8cbbe',
     'Content-Type': 'application/json',
   },
-} );
+});
 
-export {api};
+export { api };

@@ -1,23 +1,26 @@
-import {useCallback, useEffect} from 'react';
+import { useCallback, useEffect } from 'react';
 
-function useClosePopup({onClose, isOpen}) {
-  const handleOnClose = useCallback((evt) => {
-    if(evt.target === evt.currentTarget || evt.key === 'Escape') {
-      onClose();
-    }
-  },[onClose]);
-  
+function useClosePopup({ onClose, isOpen }) {
+  const handleOnClose = useCallback(
+    (evt) => {
+      if (evt.target === evt.currentTarget || evt.key === 'Escape') {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
   useEffect(() => {
-    if(isOpen) {
+    if (isOpen) {
       document.addEventListener('keydown', handleOnClose);
     }
 
-    return () => { 
-      document.removeEventListener('keydown', handleOnClose); 
-    }
+    return () => {
+      document.removeEventListener('keydown', handleOnClose);
+    };
   }, [isOpen, handleOnClose]);
 
   return handleOnClose;
 }
 
-export {useClosePopup};
+export { useClosePopup };
