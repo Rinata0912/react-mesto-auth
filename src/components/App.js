@@ -10,6 +10,9 @@ import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
 import { ConfirmDeletePopup } from './ConfirmDeletePopup';
 import { Register } from './Register';
+import { Login } from './Login';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { ProtectedRoute } from './ProtectedRoute';
 // import { Login } from './Login';
 
 function App() {
@@ -23,7 +26,7 @@ function App() {
   const [deletedCard, setDeletedCard] = useState({});
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
@@ -39,17 +42,29 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Register />
-        <Header isLogin={isLogin} />
-        <Main
-          onCardClick={handleCardClick}
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleConfirmDeleteClick}
-        />
+        <Header isLogin={isLogin} setIsLogin={setIsLogin} />
+        <BrowserRouter>
+          <Switch>
+            <Route path="/signup">
+              <Login />
+            </Route>
+            <Route path="/signin">
+              <Register />
+            </Route>
+            <ProtectedRoute
+              path="/"
+              Component={Main}
+              onCardClick={handleCardClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleConfirmDeleteClick}
+              isLogin={isLogin}
+            />
+          </Switch>
+        </BrowserRouter>
         <Footer />
 
         <EditProfilePopup
