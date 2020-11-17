@@ -13,6 +13,7 @@ import { Register } from './Register';
 import { Login } from './Login';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
+// import { InfoTooltip } from './InfoTooltip';
 // import { Login } from './Login';
 
 function App() {
