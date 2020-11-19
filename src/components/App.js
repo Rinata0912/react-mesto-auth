@@ -11,7 +11,7 @@ import { AddPlacePopup } from './AddPlacePopup';
 import { ConfirmDeletePopup } from './ConfirmDeletePopup';
 import { Register } from './Register';
 import { Login } from './Login';
-import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 
 function App() {
@@ -26,13 +26,13 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [isLogin, setIsLogin] = useState(false);
+  const [isTokenChecked, setIsTokenChecked] = useState(false);
   const [cards, setCards] = useState([]);
   const history = useHistory();
 
   const handleLogin = useCallback(() => {
     setIsLogin(true);
-    history.push('/');
-  }, [history]);
+  }, []);
 
   const handleTokenCheck = useCallback(() => {
     const token = localStorage.getItem('jwt');
@@ -42,30 +42,46 @@ function App() {
         .then((res) => {
           if (res) {
             handleLogin();
-            console.log(isLogin);
+            history.push('/');
           }
         })
-        .catch((err) => err);
+        .catch((err) => err)
+        .finally(() => {
+          setIsTokenChecked(true);
+        });
+    } else {
+      setIsTokenChecked(true);
     }
-  }, [handleLogin, isLogin]);
+  }, [handleLogin, history]);
 
   useEffect(() => {
     handleTokenCheck();
-    Promise.all([api.getInitialCards(), api.getUserInfo()])
-      .then((values) => {
-        const [initCards, userInfo] = values;
-        setCards(initCards);
-        setCurrentUser(userInfo);
-      })
-      .catch((res) => console.log(res));
   }, [handleTokenCheck]);
+
+  useEffect(() => {
+    if (isLogin) {
+      Promise.all([api.getInitialCards(), api.getUserInfo()])
+        .then((values) => {
+          const [initCards, userInfo] = values;
+          setCards(initCards);
+          setCurrentUser(userInfo);
+        })
+        .catch((res) => console.log(res));
+    }
+  }, [isLogin]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header isLogin={isLogin} setIsLogin={setIsLogin} />
-        <BrowserRouter>
-          <Switch>
+        <Header />
+        <Switch>
+          <Route path="/signin">
+            <Login onLogin={handleLogin} />
+          </Route>
+          <Route path="/signup">
+            <Register />
+          </Route>
+          {isTokenChecked && (
             <ProtectedRoute path="/" isLogin={isLogin}>
               <Main
                 onCardClick={handleCardClick}
@@ -78,14 +94,8 @@ function App() {
               />
               <Footer />
             </ProtectedRoute>
-            <Route path="/sign-in">
-              <Login onLogin={handleLogin} />
-            </Route>
-            <Route path="/sign-up">
-              <Register />
-            </Route>
-          </Switch>
-        </BrowserRouter>
+          )}
+        </Switch>
 
         <EditProfilePopup
           onClose={closeAllPopups}

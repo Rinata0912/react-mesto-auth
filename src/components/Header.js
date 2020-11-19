@@ -1,11 +1,19 @@
 import React from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import logo from '../images/logo.svg';
 
-export function Header({ isLogin, setIsLogin }) {
-  const handleExitClick = (evt) => {
-    evt.preventDefault();
-    setIsLogin(!isLogin);
-  };
+export function Header() {
+  const location = useLocation();
+  let btnText = 'Выйти';
+  let path = '/';
+
+  if (location.pathname === '/signup') {
+    btnText = 'Войти';
+    path = '/signin';
+  } else if (location.pathname === '/signin') {
+    btnText = 'Зарегистрироваться';
+    path = '/signup';
+  }
 
   return (
     <header className="header">
@@ -13,9 +21,9 @@ export function Header({ isLogin, setIsLogin }) {
         <img src={logo} alt="логотип" className="logo__img" />
       </a>
 
-      <a onClick={handleExitClick} href="/" className="header__sign">
-        {isLogin ? 'Выйти' : 'Войти'}
-      </a>
+      <Link to={path} className="header__sign">
+        {btnText}
+      </Link>
     </header>
   );
 }

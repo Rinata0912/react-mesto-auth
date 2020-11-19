@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { authApi } from '../utils/api';
-// import { Header } from './Header';
 
 export function Login({ onLogin }) {
   const [userData, setUserData] = useState({
     password: '',
     email: '',
   });
+  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -23,6 +24,7 @@ export function Login({ onLogin }) {
       .then((res) => {
         localStorage.setItem('jwt', res.token);
         onLogin();
+        history.push('/');
       })
       .catch((err) => console.log(err));
   };
