@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
+import { authApi } from '../utils/api';
 // import { Header } from './Header';
 
-export function Login() {
+export function Login({ onLogin }) {
   const [userData, setUserData] = useState({
-    email: '',
     password: '',
+    email: '',
   });
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
-    setUserData({
+    setUserData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    console.log(userData);
+    authApi
+      .signIn(userData)
+      .then((res) => {
+        localStorage.setItem('jwt', res.token);
+        onLogin();
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -24,7 +32,7 @@ export function Login() {
       {/* <Header /> */}
       <div className="sign">
         <h2 className="sign__title">Вход</h2>
-        <form className="sign__form">
+        <form onSubmit={handleSubmit} className="sign__form">
           <input
             type="email"
             className="sign__input"
@@ -32,6 +40,7 @@ export function Login() {
             required
             name="email"
             onChange={handleChange}
+            value={userData.email}
           ></input>
           <input
             type="password"
@@ -40,10 +49,9 @@ export function Login() {
             required
             name="password"
             onChange={handleChange}
+            value={userData.password}
           ></input>
-          <button onSubmit={handleSubmit} className="sign__btn">
-            Войти
-          </button>
+          <button className="sign__btn">Войти</button>
         </form>
       </div>
     </>

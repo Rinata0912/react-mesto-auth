@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Header } from './Header';
 import { Main } from './Main';
 import { Footer } from './Footer';
 import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api } from '../utils/api';
+import { api, authApi } from '../utils/api';
 import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
 import { ConfirmDeletePopup } from './ConfirmDeletePopup';
 import { Register } from './Register';
 import { Login } from './Login';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, useHistory } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
-// import { InfoTooltip } from './InfoTooltip';
-// import { Login } from './Login';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -27,10 +25,32 @@ function App() {
   const [deletedCard, setDeletedCard] = useState({});
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [cards, setCards] = useState([]);
+  const history = useHistory();
+
+  const handleLogin = useCallback(() => {
+    setIsLogin(true);
+    history.push('/');
+  }, [history]);
+
+  const handleTokenCheck = useCallback(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      authApi
+        .checkToken(token)
+        .then((res) => {
+          if (res) {
+            handleLogin();
+            console.log(isLogin);
+          }
+        })
+        .catch((err) => err);
+    }
+  }, [handleLogin, isLogin]);
 
   useEffect(() => {
+    handleTokenCheck();
     Promise.all([api.getInitialCards(), api.getUserInfo()])
       .then((values) => {
         const [initCards, userInfo] = values;
@@ -38,7 +58,7 @@ function App() {
         setCurrentUser(userInfo);
       })
       .catch((res) => console.log(res));
-  }, []);
+  }, [handleTokenCheck]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -46,27 +66,26 @@ function App() {
         <Header isLogin={isLogin} setIsLogin={setIsLogin} />
         <BrowserRouter>
           <Switch>
-            <Route path="/signup">
-              <Login />
+            <ProtectedRoute path="/" isLogin={isLogin}>
+              <Main
+                onCardClick={handleCardClick}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleConfirmDeleteClick}
+              />
+              <Footer />
+            </ProtectedRoute>
+            <Route path="/sign-in">
+              <Login onLogin={handleLogin} />
             </Route>
-            <Route path="/signin">
+            <Route path="/sign-up">
               <Register />
             </Route>
-            <ProtectedRoute
-              path="/"
-              Component={Main}
-              onCardClick={handleCardClick}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleConfirmDeleteClick}
-              isLogin={isLogin}
-            />
           </Switch>
         </BrowserRouter>
-        <Footer />
 
         <EditProfilePopup
           onClose={closeAllPopups}

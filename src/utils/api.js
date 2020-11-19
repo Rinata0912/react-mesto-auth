@@ -39,6 +39,19 @@ class Api {
       .then((res) => res);
   }
 
+  checkToken(jwt) {
+    return fetch(`${this._options.baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
+      .then(this._handleOriginalRes)
+      .then((res) => res);
+  }
+
   addCard(name, link) {
     return fetch(`${this._options.baseUrl}/cards`, {
       method: 'POST',
@@ -100,17 +113,27 @@ class Api {
       .then((res) => res);
   }
 
-  signUp() {
-    return fetch(`${this._options.baseUrl}/sign-up`, {
+  signUp({ password, email }) {
+    return fetch(`${this._options.baseUrl}/signup`, {
+      method: 'POST',
       headers: this._options.headers,
+      body: JSON.stringify({
+        password,
+        email,
+      }),
     })
       .then(this._handleOriginalRes)
       .then((res) => res);
   }
 
-  signIn() {
-    return fetch(`${this._options.baseUrl}/sign-in`, {
+  signIn({ password, email }) {
+    return fetch(`${this._options.baseUrl}/signin`, {
+      method: 'POST',
       headers: this._options.headers,
+      body: JSON.stringify({
+        password,
+        email,
+      }),
     })
       .then(this._handleOriginalRes)
       .then((res) => res);
@@ -125,4 +148,11 @@ const api = new Api({
   },
 });
 
-export { api };
+const authApi = new Api({
+  baseUrl: 'https://auth.nomoreparties.co',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export { api, authApi };

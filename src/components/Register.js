@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { authApi } from '../utils/api';
 // import { Header } from './Header';
 
 export function Register() {
   const [userData, setUserData] = useState({
-    email: '',
     password: '',
+    email: '',
   });
+  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
-    setUserData({
+    setUserData((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    console.log(userData);
+    authApi
+      .signUp(userData)
+      .then(() => history.push('/sign-in'))
+      .catch((res) => console.log(res));
+    setUserData({
+      email: '',
+      password: '',
+    });
   };
 
   return (
@@ -25,7 +35,7 @@ export function Register() {
       {/* <Header /> */}
       <div className="sign">
         <h2 className="sign__title">Регистрация</h2>
-        <form className="sign__form" noValidate>
+        <form onSubmit={handleSubmit} className="sign__form" noValidate>
           <input
             type="email"
             className="sign__input"
@@ -33,6 +43,7 @@ export function Register() {
             required
             name="email"
             onChange={handleChange}
+            value={userData.email}
           />
           <input
             type="password"
@@ -41,10 +52,9 @@ export function Register() {
             required
             name="password"
             onChange={handleChange}
+            value={userData.password}
           ></input>
-          <button onSubmit={handleSubmit} className="sign__btn">
-            Зарегистрироваться
-          </button>
+          <button className="sign__btn">Зарегистрироваться</button>
           <Link to="login" className="sign__login">
             Уже зарегистрированы? Войти
           </Link>

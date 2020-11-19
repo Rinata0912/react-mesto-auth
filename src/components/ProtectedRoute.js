@@ -1,10 +1,10 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
-export function ProtectedRoute({ isLogin, path, Component, ...props }) {
+export function ProtectedRoute({ isLogin, path, ...props }) {
   return isLogin ? (
-    <Route exact path={path} render={() => <Component {...props} />} />
+    <Route path={path} {...props} />
   ) : (
-    <Redirect to="/signin" />
+    <Redirect to="/sign-in" />
   );
 }
