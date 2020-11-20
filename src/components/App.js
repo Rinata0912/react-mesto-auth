@@ -13,6 +13,7 @@ import { Register } from './Register';
 import { Login } from './Login';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
+import { InfoTooltip } from './InfoTooltip';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -22,16 +23,23 @@ function App() {
     false
   );
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [deletedCard, setDeletedCard] = useState({});
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [isLogin, setIsLogin] = useState(false);
   const [isTokenChecked, setIsTokenChecked] = useState(false);
   const [cards, setCards] = useState([]);
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
   const history = useHistory();
 
   const handleLogin = useCallback(() => {
     setIsLogin(true);
+  }, []);
+
+  const handleSetCurrentUserEmail = useCallback((email) => {
+    setCurrentUserEmail(email);
   }, []);
 
   const handleTokenCheck = useCallback(() => {
@@ -42,6 +50,7 @@ function App() {
         .then((res) => {
           if (res) {
             handleLogin();
+            handleSetCurrentUserEmail(res.data.email);
             history.push('/');
           }
         })
@@ -52,11 +61,24 @@ function App() {
     } else {
       setIsTokenChecked(true);
     }
-  }, [handleLogin, history]);
+  }, [handleLogin, history, handleSetCurrentUserEmail]);
 
   useEffect(() => {
     handleTokenCheck();
   }, [handleTokenCheck]);
+
+  const handleSignOut = useCallback((path) => {
+    if (path === '/') {
+      localStorage.removeItem('jwt');
+      setIsLogin(false);
+      setCurrentUserEmail('');
+    }
+  }, []);
+
+  const handleRegister = useCallback((state) => {
+    setIsInfoTooltipOpen(true);
+    setIsRegister(state);
+  }, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -73,13 +95,16 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
+        <Header onSignOut={handleSignOut} userEmail={currentUserEmail} />
         <Switch>
           <Route path="/signin">
-            <Login onLogin={handleLogin} />
+            <Login
+              onLogin={handleLogin}
+              setCurrentUserEmail={handleSetCurrentUserEmail}
+            />
           </Route>
           <Route path="/signup">
-            <Register />
+            <Register onRegister={handleRegister} />
           </Route>
           {isTokenChecked && (
             <ProtectedRoute path="/" isLogin={isLogin}>
@@ -96,6 +121,12 @@ function App() {
             </ProtectedRoute>
           )}
         </Switch>
+
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={closeAllPopups}
+          isSuccess={isRegister}
+        />
 
         <EditProfilePopup
           onClose={closeAllPopups}
@@ -153,6 +184,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
     setIsImagePopupOpen(false);
+    setIsInfoTooltipOpen(false);
   }
 
   function handleCardClick(card) {

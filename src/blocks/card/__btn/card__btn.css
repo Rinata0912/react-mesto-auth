@@ -5,11 +5,12 @@
   color: inherit;
   background-color: transparent;
   cursor: pointer;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   color: #fff;
   margin-bottom: 3px;
+  outline: none;
 }
 
 .card__btn:hover {
-  opacity: .6;
+  opacity: 0.6;
 }

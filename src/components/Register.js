@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { authApi } from '../utils/api';
-// import { Header } from './Header';
 
-export function Register() {
+export function Register({ onRegister }) {
   const [userData, setUserData] = useState({
     password: '',
     email: '',
@@ -22,8 +21,14 @@ export function Register() {
     evt.preventDefault();
     authApi
       .signUp(userData)
-      .then(() => history.push('/sign-in'))
-      .catch((res) => console.log(res));
+      .then(() => {
+        history.push('/sign-in');
+        onRegister(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        onRegister(false);
+      });
     setUserData({
       email: '',
       password: '',
@@ -32,7 +37,6 @@ export function Register() {
 
   return (
     <>
-      {/* <Header /> */}
       <div className="sign">
         <h2 className="sign__title">Регистрация</h2>
         <form onSubmit={handleSubmit} className="sign__form" noValidate>

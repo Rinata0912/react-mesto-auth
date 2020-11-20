@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { authApi } from '../utils/api';
 
-export function Login({ onLogin }) {
+export function Login({ onLogin, setCurrentUserEmail }) {
   const [userData, setUserData] = useState({
     password: '',
     email: '',
@@ -23,15 +23,20 @@ export function Login({ onLogin }) {
       .signIn(userData)
       .then((res) => {
         localStorage.setItem('jwt', res.token);
-        onLogin();
-        history.push('/');
+        authApi
+          .checkToken(res.token)
+          .then((res) => {
+            onLogin();
+            setCurrentUserEmail(res.data.email);
+            history.push('/');
+          })
+          .catch((err) => err);
       })
       .catch((err) => console.log(err));
   };
 
   return (
     <>
-      {/* <Header /> */}
       <div className="sign">
         <h2 className="sign__title">Вход</h2>
         <form onSubmit={handleSubmit} className="sign__form">

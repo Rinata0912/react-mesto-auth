@@ -3,6 +3,8 @@
   line-height: 29px;
   font-weight: 900;
   color: #000;
-  margin: 0 0 23px;
+  margin: 0;
   text-align: center;
+  max-width: 358px;
+  width: 100%;
 }
