@@ -28,57 +28,10 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [isLogin, setIsLogin] = useState(false);
-  const [isTokenChecked, setIsTokenChecked] = useState(false);
   const [cards, setCards] = useState([]);
   const [currentUserEmail, setCurrentUserEmail] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const history = useHistory();
-
-  const handleLogin = useCallback(() => {
-    setIsLogin(true);
-  }, []);
-
-  const handleSetCurrentUserEmail = useCallback((email) => {
-    setCurrentUserEmail(email);
-  }, []);
-
-  const handleTokenCheck = useCallback(() => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      authApi
-        .checkToken(token)
-        .then((res) => {
-          if (res) {
-            handleLogin();
-            handleSetCurrentUserEmail(res.data.email);
-            history.push('/');
-          }
-        })
-        .catch((err) => err)
-        .finally(() => {
-          setIsTokenChecked(true);
-        });
-    } else {
-      setIsTokenChecked(true);
-    }
-  }, [handleLogin, history, handleSetCurrentUserEmail]);
-
-  useEffect(() => {
-    handleTokenCheck();
-  }, [handleTokenCheck]);
-
-  const handleSignOut = useCallback((path) => {
-    if (path === '/') {
-      localStorage.removeItem('jwt');
-      setIsLogin(false);
-      setCurrentUserEmail('');
-    }
-  }, []);
-
-  const handleRegister = useCallback((state) => {
-    setIsInfoTooltipOpen(true);
-    setIsRegister(state);
-  }, []);
 
   useEffect(() => {
     if (isLogin) {
@@ -92,40 +45,107 @@ function App() {
     }
   }, [isLogin]);
 
+  const handleSetCurrentUserEmail = useCallback((email) => {
+    setCurrentUserEmail(email);
+  }, []);
+
+  const handleTokenCheck = useCallback(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      authApi
+        .checkToken(token)
+        .then((res) => {
+          if (res) {
+            setIsLogin(true);
+            handleSetCurrentUserEmail(res.data.email);
+            history.push('/');
+          }
+        })
+        .catch((err) => err);
+    }
+  }, [history, handleSetCurrentUserEmail]);
+
+  useEffect(() => {
+    handleTokenCheck();
+  }, [handleTokenCheck]);
+
+  const handleRegister = useCallback((userData) => {
+    authApi
+      .signUp(userData)
+      .then(() => {
+        history.push('/signin');
+        setIsRegister(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsRegister(false);
+      })
+      .finally(() => {
+        setIsInfoTooltipOpen(true);
+      });
+  }, []);
+
+  const handleLogin = useCallback((userData) => {
+    authApi
+      .signIn(userData)
+      .then((res) => {
+        localStorage.setItem('jwt', res.token);
+        authApi
+          .checkToken(res.token)
+          .then((res) => {
+            setIsLogin(true);
+            handleSetCurrentUserEmail(res.data.email);
+            history.push('/');
+          })
+          .catch((err) => err);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsRegister(false);
+        setIsInfoTooltipOpen(true);
+      });
+  }, []);
+
+  const handleSignOut = useCallback((path) => {
+    if (path === '/') {
+      localStorage.removeItem('jwt');
+      setIsLogin(false);
+      setCurrentUserEmail('');
+    }
+  }, []);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header onSignOut={handleSignOut} userEmail={currentUserEmail} />
         <Switch>
           <Route path="/signin">
-            <Login
-              onLogin={handleLogin}
-              setCurrentUserEmail={handleSetCurrentUserEmail}
-            />
+            <Login onLogin={handleLogin} />
           </Route>
           <Route path="/signup">
             <Register onRegister={handleRegister} />
           </Route>
-          {isTokenChecked && (
-            <ProtectedRoute path="/" isLogin={isLogin}>
-              <Main
-                onCardClick={handleCardClick}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleConfirmDeleteClick}
-              />
-              <Footer />
-            </ProtectedRoute>
-          )}
+          // убрала проверку isTokenChecked, изначально ставила ее чтобы
+          страница не дергалась
+          <ProtectedRoute path="/" isLogin={isLogin}>
+            <Main
+              onCardClick={handleCardClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleConfirmDeleteClick}
+            />
+            <Footer />
+          </ProtectedRoute>
         </Switch>
 
         <InfoTooltip
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
-          isSuccess={isRegister}
+          isSuccess={isRegister || isLogin}
+          isRegister={isRegister}
         />
 
         <EditProfilePopup

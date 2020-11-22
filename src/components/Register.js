@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { authApi } from '../utils/api';
+import { Link } from 'react-router-dom';
 
 export function Register({ onRegister }) {
   const [userData, setUserData] = useState({
     password: '',
     email: '',
   });
-  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -19,16 +17,7 @@ export function Register({ onRegister }) {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    authApi
-      .signUp(userData)
-      .then(() => {
-        history.push('/sign-in');
-        onRegister(true);
-      })
-      .catch((err) => {
-        console.log(err);
-        onRegister(false);
-      });
+    onRegister(userData);
     setUserData({
       email: '',
       password: '',

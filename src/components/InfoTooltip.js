@@ -4,8 +4,18 @@ import { ReactComponent as SuccessIcon } from '../images/success.svg';
 import { ReactComponent as FailIcon } from '../images/fail.svg';
 import { useClosePopup } from '../utils/useClosePopup';
 
-export function InfoTooltip({ onClose, isOpen, name, isSuccess }) {
+export function InfoTooltip({ onClose, isOpen, name, isSuccess, isRegister }) {
   const handleOnClose = useClosePopup({ onClose, isOpen });
+
+  const getTitle = (isSuccess, isRegister) => {
+    if (isSuccess) {
+      return isRegister
+        ? 'Вы успешно зарегистрировались!'
+        : 'Вы успешно авторизовались';
+    }
+
+    return 'Что-то пошло не так!\nПопробуйте ещё раз.';
+  };
 
   return (
     <div
@@ -21,11 +31,7 @@ export function InfoTooltip({ onClose, isOpen, name, isSuccess }) {
         ) : (
           <FailIcon className="popup__union" />
         )}
-        <h2 className="popup__message">
-          {isSuccess
-            ? 'Вы успешно зарегистрировались!'
-            : 'Что-то пошло не так!\nПопробуйте ещё раз.'}
-        </h2>
+        <h2 className="popup__message">{getTitle(isSuccess, isRegister)}</h2>
       </div>
     </div>
   );

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { authApi } from '../utils/api';
 
-export function Login({ onLogin, setCurrentUserEmail }) {
+export function Login({ onLogin }) {
   const [userData, setUserData] = useState({
     password: '',
     email: '',
   });
-  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -19,20 +16,7 @@ export function Login({ onLogin, setCurrentUserEmail }) {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    authApi
-      .signIn(userData)
-      .then((res) => {
-        localStorage.setItem('jwt', res.token);
-        authApi
-          .checkToken(res.token)
-          .then((res) => {
-            onLogin();
-            setCurrentUserEmail(res.data.email);
-            history.push('/');
-          })
-          .catch((err) => err);
-      })
-      .catch((err) => console.log(err));
+    onLogin(userData);
   };
 
   return (
