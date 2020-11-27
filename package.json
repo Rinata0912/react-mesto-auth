@@ -1,5 +1,5 @@
 {
-  "name": "mesto-react",
+  "name": "react-mesto-auth",
   "description": "MESTO.10 by Yandex.Praktikum",
   "author": {
     "name": "Rinata Baygulova",
@@ -24,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "scp -r ./build/* rinata0912@84.201.181.71:/home/rinata0912/news-frontend"
   },
   "eslintConfig": {
     "extends": "react-app"
